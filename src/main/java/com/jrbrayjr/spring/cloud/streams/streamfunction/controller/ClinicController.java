@@ -30,11 +30,12 @@ public class ClinicController {
         this.patientService = patientService;
     }
 
-    @PostMapping( value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping( value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> registerNewPatient(@RequestBody Patient patient) {
         URI patientUri = null;
         try {
             patientUri = new URI("/register");
+            patientService.registerPatient(patient);
         } catch(URISyntaxException urise) {
             // some logging here
             return ResponseEntity.badRequest().build();

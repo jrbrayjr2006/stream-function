@@ -19,8 +19,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @WebFluxTest( controllers = {ClinicController.class})
@@ -36,9 +35,8 @@ class ClinicControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockPatientService = mock(PatientService.class);
         controller = new ClinicController(mockPatientService);
-//        webClient = WebTestClient.bindToController(webClient).build();
+        webClient = WebTestClient.bindToController(controller).build();
     }
 
     @Test
@@ -46,11 +44,12 @@ class ClinicControllerTest {
     void shouldHaveStatusCreated() {
         // Given
         Patient patient = new Patient();
-        String endpoint = "/register";
+        String endpoint = "/create";
 
         // When
         webClient.post().uri(endpoint).contentType(MediaType.APPLICATION_JSON).body(BodyInserters.fromValue(patient)).exchange().expectStatus().isCreated();
 
         // Then
     }
+
 }
