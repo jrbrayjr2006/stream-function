@@ -2,12 +2,14 @@ package com.jrbrayjr.spring.cloud.streams.streamfunction.events;
 
 import com.jrbrayjr.spring.cloud.streams.streamfunction.model.Patient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 
@@ -23,15 +25,9 @@ public class ClinicEventEmitter {
 
 
     @PostMapping( value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE )
-    public ResponseEntity<Void> createPatient(@RequestBody Patient patient) throws URISyntaxException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createPatient(@RequestBody Patient patient) {
         patientEmitterProcessor.onNext(patient);
-        URI uri = new URI("/register");
-        return ResponseEntity.created(uri).build();
-    }
-
-    @Bean
-    public Function<String, String> emitHealthTips() {
-        return value -> "No smoking!";
     }
 
     @Bean
@@ -39,7 +35,4 @@ public class ClinicEventEmitter {
         return () -> patientEmitterProcessor;
     }
 
-    public EmitterProcessor<Patient> getPatientEmitterProcessor() {
-        return patientEmitterProcessor;
-    }
 }
